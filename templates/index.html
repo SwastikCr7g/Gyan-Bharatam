@@ -7,32 +7,39 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+    <div class="divine-background"></div>
+
     <div class="manuscript-container">
         <h1>Gyan Bharatam</h1>
-        <p style="text-align: center; font-style: italic; color: #795548; margin-bottom: 20px;">
-            "The Eternal Wisdom of the Bhagavad Gita"
-        </p>
+        <p class="subtitle">"The Eternal Wisdom of the Bhagavad Gita"</p>
 
         <div class="input-group">
             <input type="text" id="query" placeholder="Ask about Karma, Dharma, or a verse like 2.47...">
             <button onclick="askGita()">Inquire</button>
-            <button onclick="resetSession()" style="background: #a1887f; margin-left: 5px;">Reset</button>
+            <button onclick="resetSession()" class="btn-reset">Reset</button>
         </div>
 
-        <div id="loading" style="display:none; text-align:center; font-style:italic; margin-top:20px; color: #8d6e63;">
-            Consulting the ancient scrolls...
+        <div id="loading" class="divine-loader" style="display:none;">
+            <span class="pulse">🕉️</span> Consulting the ancient scrolls...
         </div>
 
         <div id="response-area"></div>
     </div>
 
     <script>
+        // Global variables to track current audio state
+        let activeAudio = null;
+        let activeBtn = null;
+
         async function askGita() {
             const queryField = document.getElementById('query');
             const responseArea = document.getElementById('response-area');
             const loading = document.getElementById('loading');
 
             if (!queryField.value) return;
+
+            // Stop any playing audio before new search
+            stopAllAudio();
 
             loading.style.display = 'block';
             responseArea.innerHTML = '';
@@ -43,32 +50,111 @@
             try {
                 const response = await fetch('/ask', { method: 'POST', body: formData });
                 const data = await response.json();
-
                 loading.style.display = 'none';
 
-                // Format the AI response into proper paragraphs
-                let paragraphs = data.answer.split('\n\n');
-                let htmlOutput = paragraphs.map(p => {
-                    let text = p
-                        .replace(/([ऀ-ॿ।॥\s]{10,})/g, '<span class="devanagari">$1</span>')
-                        .replace(/(Chapter \d+, Verse \d+)/gi, '<strong style="color:#b8860b;">$1</strong>');
-                    return `<p>${text}</p>`;
+                // Splits response into sections but preserves summary text at index 0
+                let sections = data.answer.split(/(?=\[Source:)/g);
+
+                let htmlOutput = sections.map(section => {
+                    const trimmedSection = section.trim();
+                    if (!trimmedSection) return "";
+
+                    // 1. Extract Source badge if it exists
+                    let sourceMatch = trimmedSection.match(/\[Source:\s*(.*?)\]/);
+                    let sourceBadge = sourceMatch ? `<div class="source-badge">📜 ${sourceMatch[1]}</div>` : "";
+
+                    // 2. Conditional Listen Button
+                    // We only create the button if a source tag is found (Shloka cards)
+                    let listenBtn = "";
+                    if (sourceMatch) {
+                        // Extract Text for Audio recitation
+                        let audioText = trimmedSection
+                            .replace(/\[Source:.*?\]/g, "")
+                            .replace(/Sanskrit:|Hindi:|English:/gi, "")
+                            .replace(/[*#]/g, "")
+                            .trim();
+
+                        listenBtn = `<button class="btn-listen" onclick="handleAudio(this, \`${audioText.replace(/`/g, "'")}\`)">🔊 Listen</button>`;
+                    }
+
+                    // 3. Format Display Text with manuscript styling
+                    let displayText = trimmedSection
+                        .replace(/\[Source:.*?\]/g, "")
+                        .replace(/Sanskrit:/gi, '<strong class="label-heading">Sanskrit</strong>')
+                        .replace(/Hindi:/gi, '<strong class="label-heading">Hindi</strong>')
+                        .replace(/English:/gi, '<strong class="label-heading">English</strong>')
+                        .replace(/([ऀ-ॿ\s।॥,!-]{5,})/g, '<span class="devanagari">$1</span>');
+
+                    return `<div class="shloka-card">${sourceBadge}${listenBtn}<div class="card-content">${displayText}</div></div>`;
                 }).join('');
 
                 responseArea.innerHTML = htmlOutput;
             } catch (e) {
-                loading.innerHTML = "The connection to the divine was interrupted. Please try again.";
+                loading.innerHTML = "Connection interrupted. Please try again.";
+            }
+        }
+
+        async function handleAudio(btn, text) {
+            // Toggle Stop if same button clicked during playback
+            if (activeAudio && activeBtn === btn) {
+                stopAllAudio();
+                return;
+            }
+
+            stopAllAudio();
+
+            btn.innerText = "⏳ Loading...";
+            btn.disabled = true;
+            activeBtn = btn;
+
+            try {
+                const response = await fetch('/read', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ text: text })
+                });
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                activeAudio = new Audio(url);
+
+                activeAudio.onplay = () => {
+                    btn.innerText = "🛑 Stop";
+                    btn.disabled = false;
+                    btn.classList.add('playing');
+                };
+
+                activeAudio.onended = () => {
+                    stopAllAudio();
+                };
+
+                activeAudio.play();
+            } catch (e) {
+                stopAllAudio();
+            }
+        }
+
+        function stopAllAudio() {
+            if (activeAudio) {
+                activeAudio.pause();
+                activeAudio = null;
+            }
+            if (activeBtn) {
+                activeBtn.innerText = "🔊 Listen";
+                activeBtn.disabled = false;
+                activeBtn.classList.remove('playing');
+                activeBtn = null;
             }
         }
 
         function resetSession() {
+            stopAllAudio();
             document.getElementById('query').value = '';
             document.getElementById('response-area').innerHTML = '';
             document.getElementById('loading').style.display = 'none';
         }
 
-        // Handle Enter Key
-        document.getElementById('query').addEventListener('keypress', function (e) {
+        document.getElementById('query').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') askGita();
         });
     </script>
