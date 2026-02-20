@@ -32,9 +32,7 @@
 
 ---
 
-## 🔄 System Workflow
-
-
+### 🔄 System Workflow
 
 ```mermaid
 graph TD
