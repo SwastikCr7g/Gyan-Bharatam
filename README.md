@@ -49,7 +49,7 @@ graph TD
 * Retrieval: The system searches the database for the most relevant verses based on the meaning of your question, not just keywords.
 
 * Generation: The retrieved shlokas are "fed" to Gemini, which synthesizes a respectful, cited answer.
-```mermaid
+```
 📁 Project Structure
 Plaintext
 gita_rag/
