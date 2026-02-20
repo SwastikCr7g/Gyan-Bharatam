@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Noto+Serif+Devanagari&display=swap');
+
+body {
+    background: #f4ecd8 url('https://www.transparenttextures.com/patterns/old-map.png');
+    font-family: 'Cormorant Garamond', serif;
+    color: #3e2723;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.manuscript-container {
+    max-width: 850px;
+    width: 100%;
+    background: rgba(255, 253, 245, 0.97);
+    padding: 50px;
+    border: 3px solid #b8860b;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    border-radius: 2px;
+    border-style: double;
+}
+
+h1 {
+    text-align: center;
+    color: #5d4037;
+    font-size: 2.8rem;
+    margin-bottom: 5px;
+}
+
+.input-group {
+    margin: 30px 0;
+    display: flex;
+    border-bottom: 2px solid #b8860b;
+}
+
+input[type="text"] {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    background: transparent;
+    font-size: 1.3rem;
+    font-family: inherit;
+    outline: none;
+    color: #3e2723;
+}
+
+button {
+    padding: 10px 30px;
+    background: #5d4037;
+    color: #f4ecd8;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-family: inherit;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #3e2723;
+}
+
+#response-area {
+    margin-top: 30px;
+    line-height: 1.8;
+    font-size: 1.3rem;
+    /* Fixed: Normal white-space prevents the one-word-per-line bug */
+    white-space: normal;
+    text-align: justify;
+    color: #3e2723;
+    animation: fadeIn 0.8s ease-in;
+}
+
+#response-area p {
+    margin-bottom: 20px;
+}
+
+.devanagari {
+    font-family: 'Noto Serif Devanagari', serif;
+    font-size: 1.6rem;
+    color: #1a0f0d;
+    display: block;
+    margin: 15px 0;
+    font-weight: bold;
+    text-align: center; /* Shlokas look better centered */
+    line-height: 2.2;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

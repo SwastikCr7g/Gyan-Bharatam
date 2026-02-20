@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gyan Bharatam | Gita Knowledge Engine</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="manuscript-container">
+        <h1>Gyan Bharatam</h1>
+        <p style="text-align: center; font-style: italic; color: #795548; margin-bottom: 20px;">
+            "The Eternal Wisdom of the Bhagavad Gita"
+        </p>
+
+        <div class="input-group">
+            <input type="text" id="query" placeholder="Ask about Karma, Dharma, or a verse like 2.47...">
+            <button onclick="askGita()">Inquire</button>
+            <button onclick="resetSession()" style="background: #a1887f; margin-left: 5px;">Reset</button>
+        </div>
+
+        <div id="loading" style="display:none; text-align:center; font-style:italic; margin-top:20px; color: #8d6e63;">
+            Consulting the ancient scrolls...
+        </div>
+
+        <div id="response-area"></div>
+    </div>
+
+    <script>
+        async function askGita() {
+            const queryField = document.getElementById('query');
+            const responseArea = document.getElementById('response-area');
+            const loading = document.getElementById('loading');
+
+            if (!queryField.value) return;
+
+            loading.style.display = 'block';
+            responseArea.innerHTML = '';
+
+            const formData = new FormData();
+            formData.append('query', queryField.value);
+
+            try {
+                const response = await fetch('/ask', { method: 'POST', body: formData });
+                const data = await response.json();
+
+                loading.style.display = 'none';
+
+                // Format the AI response into proper paragraphs
+                let paragraphs = data.answer.split('\n\n');
+                let htmlOutput = paragraphs.map(p => {
+                    let text = p
+                        .replace(/([ऀ-ॿ।॥\s]{10,})/g, '<span class="devanagari">$1</span>')
+                        .replace(/(Chapter \d+, Verse \d+)/gi, '<strong style="color:#b8860b;">$1</strong>');
+                    return `<p>${text}</p>`;
+                }).join('');
+
+                responseArea.innerHTML = htmlOutput;
+            } catch (e) {
+                loading.innerHTML = "The connection to the divine was interrupted. Please try again.";
+            }
+        }
+
+        function resetSession() {
+            document.getElementById('query').value = '';
+            document.getElementById('response-area').innerHTML = '';
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        // Handle Enter Key
+        document.getElementById('query').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') askGita();
+        });
+    </script>
+</body>
+</html>
