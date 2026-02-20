@@ -27,8 +27,8 @@ HuggingFace Datasets: Powers the raw data pipeline (JDhruv14/Bhagavad-Gita_Datas
 
 Flask: Lightweight backend for serving the Knowledge Engine.
 
-🔄 System Workflow
-Code snippet
+### 🔄 System Workflow
+```mermaid
 graph LR
     A[User Query] --> B{Query Parser}
     B -- "Direct Verse" --> C[Metadata Lookup]
@@ -37,6 +37,7 @@ graph LR
     D --> E
     E --> F[Gemini 2.5 Flash]
     F --> G[Formatted UI Output]
+    
 Ingestion: Ancient manuscripts are converted into high-dimensional vectors and stored in ChromaDB.
 
 Retrieval: The system searches the database for the most relevant verses based on the meaning of your question, not just keywords.
@@ -55,6 +56,7 @@ gita_rag/
 │   ├── generator.py      # Gemini 2.5 API Bridge
 │   └── retriever.py      # Similarity Search Logic
 └── static/css/style.css  # Manuscript Styling
+
 🚀 Getting Started
 Prerequisites
 Python 3.12+
