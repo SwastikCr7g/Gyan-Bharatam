@@ -42,14 +42,14 @@ graph TD
     C --> E[Context Retrieval]
     D --> E
     E --> F[Gemini 2.5 Flash]
-    F --> G[Formatted UI Output]
+    F --> G[Formatted UI Output] 
+```
+* Ingestion: Ancient manuscripts are converted into high-dimensional vectors and stored in ChromaDB.
 
-Ingestion: Ancient manuscripts are converted into high-dimensional vectors and stored in ChromaDB.
+* Retrieval: The system searches the database for the most relevant verses based on the meaning of your question, not just keywords.
 
-Retrieval: The system searches the database for the most relevant verses based on the meaning of your question, not just keywords.
-
-Generation: The retrieved shlokas are "fed" to Gemini, which synthesizes a respectful, cited answer.
-
+* Generation: The retrieved shlokas are "fed" to Gemini, which synthesizes a respectful, cited answer.
+```mermaid
 📁 Project Structure
 Plaintext
 gita_rag/
@@ -62,6 +62,7 @@ gita_rag/
 │   ├── generator.py      # Gemini 2.5 API Bridge
 │   └── retriever.py      # Similarity Search Logic
 └── static/css/style.css  # Manuscript Styling
+```
 🚀 Getting Started
 Prerequisites
 Python 3.12+
@@ -98,3 +99,4 @@ Run these in your PyCharm terminal:
 git add README.md
 git commit -m "Docs: Final professional README with Mermaid and tree fixes"
 git push
+```
