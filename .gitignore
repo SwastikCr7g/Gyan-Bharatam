@@ -6,12 +6,15 @@ env/
 # Secrets
 .env
 
-# Local Database (Optional: Usually RAG DBs are regenerated from scratch)
+# Local Database (persistent memory)
 data/chroma_db/
 
 # Python Cache
 __pycache__/
 *.py[cod]
+
+# Audio Artifacts
+static/audio/*.mp3
 
 # IDE Settings
 .idea/

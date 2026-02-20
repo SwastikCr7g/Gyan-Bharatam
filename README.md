@@ -2,73 +2,67 @@
 
 [![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![Framework: Flask](https://img.shields.io/badge/Framework-Flask-lightgrey?logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
-[![AI Model: Gemini 2.5](https://img.shields.io/badge/AI_Model-Gemini_2.5_Flash-orange?logo=google-gemini&logoColor=white)](https://ai.google.dev/)
+[![AI Model: Gemini](https://img.shields.io/badge/AI_Model-Gemini_2.5_Flash-orange?logo=google-gemini&logoColor=white)](https://ai.google.dev/)
 
 **Gyan Bharatam** is a high-accuracy **RAG (Retrieval-Augmented Generation)** system built to provide authentic insights from the Bhagavad Gita. By combining local semantic search with Google's most advanced reasoning models, it delivers scriptural answers in Sanskrit, Hindi, and English with **zero hallucinations**.
 
 ---
 
-## ✨ Key Features
+## 🏗️ System Architecture & Flow
 
-* **🎯 Contextual Accuracy**: Uses a verified dataset of 701 verses to ensure the AI never fabricates "wisdom".
-* **🔍 Intent-Aware Search**: 
-    * **Direct Mode**: Instant lookup for specific verses (e.g., "2.47").
-    * **Conceptual Mode**: Semantic search for complex topics (e.g., "What is the nature of the Soul?").
-* **📜 Ancient UI Theme**: A custom-styled web interface designed to look like an ancient parchment manuscript.
-* **🔤 Script Intelligence**: Automatically detects and formats Devanagari script for professional presentation.
+The system utilizes a specialized RAG pipeline designed to handle ancient multilingual datasets.
 
----
 
-## 🛠️ The Tech Stack
 
-### **The "Brain" & "Soul" (AI Models)**
-* **LLM**: `Gemini 2.5 Flash` — Chosen for its deep reasoning and multilingual support.
-* **Embeddings**: `all-MiniLM-L6-v2` — A local, CPU-efficient model for semantic vector search.
-
-### **The Backbone (Software & Infrastructure)**
-* **LangChain**: Orchestrates the complex RAG pipeline.
-* **ChromaDB**: A specialized vector database that stores shloka "embeddings".
-* **Flask**: Lightweight backend for serving the Knowledge Engine.
-
----
-
-### 🔄 System Workflow
-
+### **The Logic Flow**
 ```mermaid
 graph TD
-    A[User Query] --> B{Query Parser}
-    B -- "Direct Verse" --> C[Metadata Lookup]
-    B -- "Conceptual" --> D[Vector Similarity Search]
-    C --> E[Context Retrieval]
-    D --> E
-    E --> F[Gemini 2.5 Flash]
-    F --> G[Formatted UI Output] 
+    User([User Query]) --> Pre[Query Pre-processing]
+    Pre --> Search{Semantic Search}
+    Search --> DB[(ChromaDB)]
+    DB --> Context[Retrieve Top K Verses]
+    Context --> LLM[Gemini 2.5 Flash]
+    LLM --> Clean[Text Artifact Cleaning]
+    Clean --> UI[Manuscript Interface]
+    UI --> Audio[Edge-TTS Recitation]
 ```
-* Ingestion: Ancient manuscripts are converted into high-dimensional vectors and stored in ChromaDB.
+Ingestion: 701 verses are processed and stored as high-dimensional vectors in ChromaDB.
 
-* Retrieval: The system searches the database for the most relevant verses based on the meaning of your question, not just keywords.
+Retrieval: When a query is received, the system calculates the semantic similarity to find the most relevant shlokas.
 
-* Generation: The retrieved shlokas are "fed" to Gemini, which synthesizes a respectful, cited answer.
+Generation: Gemini 2.5 Flash synthesizes a grounded answer using only the retrieved context.
+
+Refinement: Post-generation logic removes artifacts like pipes or brackets to maintain the "Manuscript" aesthetic.
+
 ```
 📁 Project Structure
 Plaintext
-gita_rag/
-├── app.py                # Main Flask Application
-├── config.py             # Environment & Model Settings
-├── data/chroma_db/       # Persistent AI Memory (Vector DB)
-├── rag/
-│   ├── dataset_loader.py # Fetches 701 Gita Verses
-│   ├── embedding.py      # Local Vectorization Logic
-│   ├── generator.py      # Gemini 2.5 API Bridge
-│   └── retriever.py      # Similarity Search Logic
-└── static/css/style.css  # Manuscript Styling
+Gyan-Bharatam/
+├── app.py                # Main Flask application & API routes
+├── config.py             # Configuration for Gemini API & Vector DB
+├── generator.py          # AI response generation & artifact cleaning
+├── retriever.py          # Vector search logic for ChromaDB
+├── data/
+│   └── chroma_db/        # Persistent vector database storage
+├── static/
+│   ├── css/
+│   │   └── style.css     # Divine Manuscript UI & Stop button visuals
+│   ├── images/
+│   │   └── chariot.jpg   # Background artwork asset
+│   └── audio/            # (GitIgnored) Runtime recitation files
+└── templates/
+    └── index.html        # Interactive frontend with Stop/Listen logic
 ```
+✨ Key Features
+🎯 Contextual Accuracy: Powered by a verified dataset of 701 verses to prevent AI fabrication.
+
+🔍 Intent-Aware Search: Handles both direct verse lookup (e.g., "18.66") and conceptual topics like Karma or Yoga.
+
+📜 Ancient UI Theme: A custom parchment-style interface that mirrors the look of ancient manuscripts.
+
+🔊 Scripture Recitation: Real-time TTS for Sanskrit shlokas and Hindi/English translations.
+
 🚀 Getting Started
-Prerequisites
-Python 3.12+
-
-Google Gemini API Key
-
 Installation
 Clone the Repository:
 
@@ -79,16 +73,11 @@ Setup Environment:
 
 Bash
 python -m venv .venv
-.\.venv\Scripts\activate
+.\.venv\Scripts\activate  # Windows
 pip install -r requirements.txt
-API Configuration:
-Create a .env file in the root directory and add your key:
-GOOGLE_API_KEY=your_gemini_key_here
-
 Run the Engine:
 
 Bash
 python app.py
 🏆 Project Impact
-Built during my AI/ML internship to solve the problem of AI Hallucinations in Cultural Datasets. This system achieves a 99% accuracy rate in direct verse citation compared to standard LLMs.
-
+Developed during my AI/ML Internship at Immverse AI, this project demonstrates the ability of RAG architectures to bridge traditional scriptural wisdom with modern AI reasoning.
