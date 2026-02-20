@@ -92,11 +92,3 @@ python app.py
 🏆 Project Impact
 Built during my AI/ML internship to solve the problem of AI Hallucinations in Cultural Datasets. This system achieves a 99% accuracy rate in direct verse citation compared to standard LLMs.
 
-
-**Terminal Commands to Push:**
-Run these in your PyCharm terminal:
-```powershell
-git add README.md
-git commit -m "Docs: Final professional README with Mermaid and tree fixes"
-git push
-```
