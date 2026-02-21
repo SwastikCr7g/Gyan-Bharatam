@@ -36,7 +36,7 @@ Refinement: Post-generation logic removes artifacts like pipes or brackets to ma
 
 ```
 📁 Project Structure
-Plaintext
+
 Gyan-Bharatam/
 ├── app.py                # Main Flask application & API routes
 ├── config.py             # Configuration for Gemini API & Vector DB
